@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3001;
 // Enable CORS
 app.use(
   cors({
-    origin: "https://sophisticated-file-management-frontend.vercel.app", // Replace with your frontend URL if different
+    origin: "http://sophisticated-file-management-frontend.vercel.app", // Replace with your frontend URL if different
     methods: "GET,POST",
   })
 );
