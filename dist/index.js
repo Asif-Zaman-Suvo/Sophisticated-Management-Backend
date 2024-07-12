@@ -11,7 +11,7 @@ const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3001;
 // Enable CORS
 app.use((0, cors_1.default)({
-    origin: "http://localhost:3000", // Replace with your frontend URL if different
+    origin: "https://sophisticated-file-management-frontend.vercel.app", // Replace with your frontend URL if different
     methods: "GET,POST",
 }));
 // Set up multer for file uploads
