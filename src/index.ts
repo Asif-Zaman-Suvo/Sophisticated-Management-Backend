@@ -45,14 +45,19 @@ app.post(
   "/api/upload",
   upload.single("file"),
   (req: Request, res: Response) => {
-    if (!req.file) {
-      console.error("No file uploaded");
-      return res.status(400).json({ error: "No file uploaded" });
-    }
+    try {
+      if (!req.file) {
+        console.error("No file uploaded");
+        return res.status(400).json({ error: "No file uploaded" });
+      }
 
-    const filePath = `/uploads/${req.file.filename}`;
-    console.log("File uploaded:", filePath);
-    res.status(200).json({ filePath: filePath });
+      const filePath = `/uploads/${req.file.filename}`;
+      console.log("File uploaded:", filePath);
+      res.status(200).json({ filePath: filePath });
+    } catch (error) {
+      console.error("Error during file upload:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
   }
 );
 
