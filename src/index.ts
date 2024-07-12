@@ -1,7 +1,6 @@
 import express, { Request, Response } from "express";
 import multer, { Multer } from "multer";
 import path from "path";
-import fs from "fs";
 import cors from "cors";
 import { RequestHandler } from "express-serve-static-core";
 
@@ -16,16 +15,10 @@ app.use(
   })
 );
 
-// Ensure the uploads directory exists
-const uploadDir = path.join(__dirname, "uploads");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
-}
-
-// Set up multer for file uploads
+// gSet up multer for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, uploadDir);
+    cb(null, "./uploads"); // Destination folder relative to the root
   },
   filename: function (req, file, cb) {
     cb(null, `${Date.now()}-${file.originalname}`);
@@ -37,8 +30,8 @@ const upload: Multer = multer({ storage: storage });
 // Middleware to handle JSON responses
 app.use(express.json() as RequestHandler);
 
-// Serve static files from the uploads directory
-app.use("/uploads", express.static(uploadDir));
+// Serve static files from the /uploads directory
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // API endpoint to handle file uploads
 app.post(
