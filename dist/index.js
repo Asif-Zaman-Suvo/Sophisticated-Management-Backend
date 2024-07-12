@@ -36,13 +36,19 @@ app.use(express_1.default.json());
 app.use("/uploads", express_1.default.static(uploadDir));
 // API endpoint to handle file uploads
 app.post("/api/upload", upload.single("file"), (req, res) => {
-    if (!req.file) {
-        console.error("No file uploaded");
-        return res.status(400).json({ error: "No file uploaded" });
+    try {
+        if (!req.file) {
+            console.error("No file uploaded");
+            return res.status(400).json({ error: "No file uploaded" });
+        }
+        const filePath = `/uploads/${req.file.filename}`;
+        console.log("File uploaded:", filePath);
+        res.status(200).json({ filePath: filePath });
     }
-    const filePath = `/uploads/${req.file.filename}`;
-    console.log("File uploaded:", filePath);
-    res.status(200).json({ filePath: filePath });
+    catch (error) {
+        console.error("Error during file upload:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 });
 // Start the server
 app.listen(PORT, () => {
