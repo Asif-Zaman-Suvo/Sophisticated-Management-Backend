@@ -11,15 +11,21 @@ const PORT = process.env.PORT || 3001;
 // Enable CORS
 app.use(
   cors({
-    origin: "https://sophisticated-file-management-frontend.vercel.app", // Replace with your frontend URL if different
+    origin: "https://sophisticated-file-management-frontend.vercel.app",
     methods: "GET,POST",
   })
 );
 
+// Ensure the uploads directory exists
+const uploadDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
+
 // Set up multer for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/");
+    cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
     cb(null, `${Date.now()}-${file.originalname}`);
@@ -32,7 +38,7 @@ const upload: Multer = multer({ storage: storage });
 app.use(express.json() as RequestHandler);
 
 // Serve static files from the uploads directory
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", express.static(uploadDir));
 
 // API endpoint to handle file uploads
 app.post(
