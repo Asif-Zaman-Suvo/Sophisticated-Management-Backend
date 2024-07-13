@@ -1,6 +1,6 @@
 # Sophisticated File Management Backend
 
-This is a file Management project and backend code 
+This is a file Management project and backend code
 
 ## Installation
 
@@ -35,14 +35,14 @@ To deploy this project run
 Then
 
 ```bash
-  vercel
+  go to railway.app
 
 ```
 
 Then
 
 ```bash
-  vercel -- prod
+ deploy in railway.app
 ```
 
 ## 🚀 About Me
