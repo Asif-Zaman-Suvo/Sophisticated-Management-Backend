@@ -2,7 +2,11 @@ import express, { Request, Response } from "express";
 import multer, { Multer } from "multer";
 import path from "path";
 import cors from "cors";
+import mongoose from "mongoose";
 import { RequestHandler } from "express-serve-static-core";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -15,7 +19,30 @@ app.use(
   })
 );
 
-// gSet up multer for file uploads
+// MongoDB connection
+const mongoUri = process.env.DATABASE_URL || "";
+mongoose
+  .connect(mongoUri)
+  .then(() => {
+    console.log("Connected to MongoDB");
+  })
+  .catch((err) => {
+    console.error("Error connecting to MongoDB:", err);
+  });
+
+// Define a simple file schema
+const fileSchema = new mongoose.Schema({
+  filename: String,
+  path: String,
+  uploadedAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+const File = mongoose.model("File", fileSchema);
+
+// Set up multer for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "./uploads"); // Destination folder relative to the root
@@ -37,7 +64,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.post(
   "/api/upload",
   upload.single("file"),
-  (req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
     try {
       if (!req.file) {
         console.error("No file uploaded");
@@ -46,6 +73,14 @@ app.post(
 
       const filePath = `/uploads/${req.file.filename}`;
       console.log("File uploaded:", filePath);
+
+      // Save file info to MongoDB
+      const newFile = new File({
+        filename: req.file.filename,
+        path: filePath,
+      });
+      await newFile.save();
+
       res.status(200).json({ filePath: filePath });
     } catch (error) {
       console.error("Error during file upload:", error);
