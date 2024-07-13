@@ -23,7 +23,8 @@ const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3001;
 // Enable CORS
 app.use((0, cors_1.default)({
-    origin: "http://sophisticated-file-management-frontend.vercel.app",
+    origin: "https://sophisticated-file-management-frontend.vercel.app",
+    credentials: true,
     methods: "GET,POST",
 }));
 // MongoDB connection
